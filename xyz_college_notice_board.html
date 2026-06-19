@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ College – Digital Notice Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple-dark:  #3b1d8a;
+      --purple-main:  #5a2db5;
+      --purple-mid:   #7c4dcc;
+      --purple-light: #a57fe8;
+      --purple-pale:  #f3eeff;
+      --gold:         #f5c842;
+      --gold-light:   #fff8dc;
+      --white:        #ffffff;
+      --bg:           #f7f5fc;
+      --text:         #1a1233;
+      --text-muted:   #6b5c8a;
+      --border:       #e2d9f3;
+      --radius-sm:    6px;
+      --radius-md:    12px;
+      --radius-lg:    18px;
+      --shadow:       0 2px 12px rgba(90,45,181,.10);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--purple-dark);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 24px;
+      height: 62px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-right: 28px;
+    }
+
+    .brand-logo {
+      width: 40px; height: 40px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--purple-dark);
+      flex-shrink: 0;
+    }
+
+    .brand-text { line-height: 1.15; }
+    .brand-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px; font-weight: 700;
+      color: var(--white);
+    }
+    .brand-sub { font-size: 10px; color: var(--purple-light); }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 2px;
+      list-style: none;
+      flex: 1;
+    }
+
+    .nav-links a {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      color: #cfc4ef;
+      font-size: 13.5px; font-weight: 500;
+      text-decoration: none;
+      transition: background .18s, color .18s;
+    }
+
+    .nav-links a:hover { background: rgba(255,255,255,.09); color: var(--white); }
+    .nav-links .active { background: var(--gold); color: var(--purple-dark) !important; font-weight: 700; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px;
+      margin-left: auto;
+    }
+
+    .search-box {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 20px;
+      padding: 5px 14px;
+      gap: 8px;
+    }
+
+    .search-box input {
+      background: none; border: none; outline: none;
+      color: var(--white);
+      font-size: 12.5px; width: 180px;
+    }
+    .search-box input::placeholder { color: rgba(255,255,255,.55); }
+    .search-box svg { color: rgba(255,255,255,.6); }
+
+    .bell-btn {
+      position: relative;
+      background: rgba(255,255,255,.12);
+      border: none; border-radius: 50%;
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--white);
+    }
+    .bell-badge {
+      position: absolute; top: -3px; right: -3px;
+      background: #e53e3e; color: #fff;
+      font-size: 9px; font-weight: 700;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .login-btn {
+      background: var(--gold);
+      color: var(--purple-dark);
+      border: none; border-radius: 20px;
+      padding: 7px 18px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: opacity .18s;
+    }
+    .login-btn:hover { opacity: .88; }
+    .login-note { font-size: 9.5px; color: var(--purple-light); text-align: right; }
+
+    /* ── LAYOUT ── */
+    .page-body {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    /* ── HERO SLIDER ── */
+    .hero {
+      background: linear-gradient(130deg, var(--purple-dark) 0%, var(--purple-main) 55%, var(--purple-mid) 100%);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      min-height: 240px;
+      display: flex; align-items: center;
+      padding: 36px 40px;
+      color: var(--white);
+    }
+
+    .hero-bg-img {
+      position: absolute; right: 0; top: 0;
+      width: 55%; height: 100%;
+      object-fit: cover;
+      opacity: .35;
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
+    .hero-badge {
+      position: absolute; top: 20px; left: 24px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+      padding: 4px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 380px;
+      margin-top: 18px;
+    }
+
+    .hero-content h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 30px; font-weight: 800; line-height: 1.18;
+      margin-bottom: 12px;
+    }
+
+    .hero-content p {
+      font-size: 13.5px; color: rgba(255,255,255,.82);
+      margin-bottom: 24px; line-height: 1.55;
+    }
+
+    .hero-cta {
+      background: var(--white);
+      color: var(--purple-dark);
+      border: none; border-radius: 24px;
+      padding: 9px 22px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      transition: opacity .18s;
+    }
+    .hero-cta:hover { opacity: .88; }
+
+    .hero-dots {
+      position: absolute; bottom: 16px; left: 40px;
+      display: flex; gap: 6px;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,.4);
+    }
+    .dot.active { background: var(--white); }
+
+    /* ── CARDS GRID ── */
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .notice-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 15px; font-weight: 700;
+    }
+
+    .view-all-link {
+      font-size: 12px; color: var(--purple-main); font-weight: 600;
+      text-decoration: none;
+    }
+    .view-all-link:hover { text-decoration: underline; }
+
+    .notice-list { list-style: none; }
+
+    .notice-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .14s;
+    }
+    .notice-item:last-child { border-bottom: none; }
+    .notice-item:hover { background: var(--purple-pale); border-radius: var(--radius-sm); padding-left: 6px; }
+
+    .notice-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 16px;
+    }
+
+    .icon-yellow  { background: #fff8dc; }
+    .icon-blue    { background: #e8f4ff; }
+    .icon-green   { background: #e8fff2; }
+    .icon-red     { background: #fff0f0; }
+    .icon-purple  { background: var(--purple-pale); }
+    .icon-orange  { background: #fff3e8; }
+
+    .notice-info { flex: 1; min-width: 0; }
+    .notice-info h4 {
+      font-size: 13px; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .notice-meta {
+      font-size: 11px; color: var(--text-muted);
+      display: flex; gap: 10px; margin-top: 2px;
+    }
+    .notice-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .notice-arrow {
+      color: var(--text-muted); font-size: 14px; flex-shrink: 0;
+    }
+
+    .view-all-btn {
+      display: block; text-align: center;
+      margin-top: 14px;
+      padding: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 12.5px; font-weight: 600;
+      color: var(--purple-main);
+      text-decoration: none;
+      transition: background .16s;
+    }
+    .view-all-btn:hover { background: var(--purple-pale); }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 18px; }
+
+    .side-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .side-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .side-card-title { font-size: 15px; font-weight: 700; }
+
+    .quick-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      text-decoration: none; color: var(--text);
+      transition: background .14s;
+    }
+    .quick-link:last-child { border-bottom: none; }
+    .quick-link:hover .ql-label { color: var(--purple-main); }
+
+    .ql-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--purple-pale);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 17px;
+    }
+
+    .ql-info { flex: 1; }
+    .ql-label { font-size: 13px; font-weight: 600; }
+    .ql-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    .new-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--purple-dark);
+      font-size: 9.5px; font-weight: 700;
+      padding: 2px 6px; border-radius: 4px;
+      margin-left: 5px;
+    }
+
+    .ql-arrow { color: var(--text-muted); font-size: 14px; }
+
+    /* ── DOWNLOAD CENTER ── */
+    .dl-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .dl-item:last-child { border-bottom: none; }
+
+    .dl-icon {
+      width: 32px; height: 32px; border-radius: 6px;
+      background: #fff0f0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .dl-icon.blue { background: #e8f4ff; }
+
+    .dl-info { flex: 1; }
+    .dl-name { font-size: 12.5px; font-weight: 600; }
+    .dl-meta { font-size: 11px; color: var(--text-muted); }
+
+    .dl-btn {
+      background: none; border: 1.5px solid var(--border);
+      border-radius: 6px; width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--purple-main);
+      transition: background .16s;
+    }
+    .dl-btn:hover { background: var(--purple-pale); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      font-size: 12px; color: var(--text-muted);
+      padding: 24px 0 16px;
+    }
+
+    /* ── SVG ICONS (inline) ── */
+    .ico { display:inline-block; vertical-align:middle; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="brand-logo">XYZ</div>
+    <div class="brand-text">
+      <div class="brand-name">XYZ COLLEGE</div>
+      <div class="brand-sub">Digital Notice Board</div>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active">🏠 Home</a></li>
+    <li><a href="#">📢 Announcements</a></li>
+    <li><a href="#">📋 Notices</a></li>
+    <li><a href="#">📅 Events</a></li>
+    <li><a href="#">📞 Contact Us</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="search-box">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search announcements, notices…"/>
+    </div>
+
+    <button class="bell-btn">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="bell-badge">2</span>
+    </button>
+
+    <div>
+      <button class="login-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Login
+      </button>
+      <div class="login-note">For Teacher / Staff Only</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ BODY ═══════════════════════════ -->
+<div class="page-body">
+
+  <!-- ── LEFT COLUMN ── -->
+  <div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge">📢 New Announcement</div>
+
+      <!-- placeholder college building gradient overlay -->
+      <div style="position:absolute;right:0;top:0;width:50%;height:100%;background:linear-gradient(to left,rgba(122,68,200,.45),transparent);border-radius:0 var(--radius-lg) var(--radius-lg) 0;"></div>
+      <!-- decorative wave shape -->
+      <svg style="position:absolute;right:80px;top:-20px;opacity:.18;" width="260" height="280" viewBox="0 0 260 280" fill="white"><ellipse cx="130" cy="140" rx="130" ry="140"/></svg>
+
+      <div class="hero-content">
+        <h1>Academic Calendar<br/>2024–25 Released</h1>
+        <p>The Academic Calendar for the session 2024–25 is now available for all students.</p>
+        <button class="hero-cta">View Announcement →</button>
+      </div>
+
+      <div class="hero-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS + NOTICES -->
+    <div class="cards-row">
+
+      <!-- Latest Announcements -->
+      <div class="notice-card">
+        <div class="card-header">
+          <span class="card-title">Latest Announcements</span>
+          <a href="#" class="view-all-link">View All</a>
+        </div>
+        <ul class="notice-list">
+          <li class="notice-item">
+            <div class="notice-icon icon-yellow">📢</div>
+            <div class="notice-info">
+              <h4>Academic Calendar 2024-25 Released</h4>
+              <div class="notice-meta">
+                <span>📅 22 May 2024</span>
+                <span>👤 Academic</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-blue">🏛️</div>
+            <div class="notice-info">
+              <h4>Central Library Timings during Summer Break</h4>
+              <div class="notice-meta">
+                <span>📅 20 May 2024</span>
+                <span>👤 General</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-green">🏆</div>
+            <div class="notice-info">
+              <h4>Merit Scholarship – Application Process</h4>
+              <div class="notice-meta">
+                <span>📅 18 May 2024</span>
+                <span>👤 General</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-red">ℹ️</div>
+            <div class="notice-info">
+              <h4>Important Information for All Students</h4>
+              <div class="notice-meta">
+                <span>📅 10 May 2024</span>
+                <span>👤 Students</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-purple">👥</div>
+            <div class="notice-info">
+              <h4>Career Guidance Session for Final Year Students</h4>
+              <div class="notice-meta">
+                <span>📅 08 May 2024</span>
+                <span>👤 Students</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+        </ul>
+        <a href="#" class="view-all-btn">View All Announcements →</a>
+      </div>
+
+      <!-- Latest Notices -->
+      <div class="notice-card">
+        <div class="card-header">
+          <span class="card-title">Latest Notices</span>
+          <a href="#" class="view-all-link">View All</a>
+        </div>
+        <ul class="notice-list">
+          <li class="notice-item">
+            <div class="notice-icon icon-yellow">📄</div>
+            <div class="notice-info">
+              <h4>End Semester Examination Schedule – Even 2023-24</h4>
+              <div class="notice-meta">
+                <span>📅 15 May 2024</span>
+                <span>👤 Exam Call</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-blue">🚌</div>
+            <div class="notice-info">
+              <h4>College Bus Service – Revised Timings</h4>
+              <div class="notice-meta">
+                <span>📅 14 May 2024</span>
+                <span>👤 Treviset</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-green">🔬</div>
+            <div class="notice-info">
+              <h4>Lab Maintenance – 17th May 2024</h4>
+              <div class="notice-meta">
+                <span>📅 13 May 2024</span>
+                <span>👤 Admin</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-orange">🪪</div>
+            <div class="notice-info">
+              <h4>ID Card Verification Shell</h4>
+              <div class="notice-meta">
+                <span>📅 12 May 2024</span>
+                <span>👤 Admin</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+          <li class="notice-item">
+            <div class="notice-icon icon-purple">🎓</div>
+            <div class="notice-info">
+              <h4>Alumni Meet 2024 – Registration Open</h4>
+              <div class="notice-meta">
+                <span>📅 09 May 2024</span>
+                <span>👤 Alumni Portal</span>
+              </div>
+            </div>
+            <span class="notice-arrow">›</span>
+          </li>
+        </ul>
+        <a href="#" class="view-all-btn">View All Notices →</a>
+      </div>
+
+    </div><!-- /cards-row -->
+  </div><!-- /left -->
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+
+    <!-- Quick Links -->
+    <div class="side-card">
+      <div class="side-card-header">
+        <span class="side-card-title">Quick Links</span>
+        <a href="#" class="view-all-link">View All</a>
+      </div>
+
+      <a href="#" class="quick-link">
+        <div class="ql-icon">📝</div>
+        <div class="ql-info">
+          <div class="ql-label">Exam &amp; Assessment Hub <span class="new-badge">New</span></div>
+          <div class="ql-sub">Find exam dams, batched training, report templates.</div>
+        </div>
+        <span class="ql-arrow">›</span>
+      </a>
+
+      <a href="#" class="quick-link">
+        <div class="ql-icon">💼</div>
+        <div class="ql-info">
+          <div class="ql-label">Training &amp; Placement (T&amp;P) <span class="new-badge">New</span></div>
+          <div class="ql-sub">Resources for placements, resumes, NOCs.</div>
+        </div>
+        <span class="ql-arrow">›</span>
+      </a>
+
+      <a href="#" class="quick-link">
+        <div class="ql-icon">🧪</div>
+        <div class="ql-info">
+          <div class="ql-label">Lab &amp; Project Resources <span class="new-badge">New</span></div>
+          <div class="ql-sub">Manuals, safety, seminars, project guides.</div>
+        </div>
+        <span class="ql-arrow">›</span>
+      </a>
+
+      <a href="#" class="quick-link">
+        <div class="ql-icon">🛡️</div>
+        <div class="ql-info">
+          <div class="ql-label">Administrative &amp; Student Welfare <span class="new-badge">New</span></div>
+          <div class="ql-sub">Leave, forms, scholarship shops, affidavits.</div>
+        </div>
+        <span class="ql-arrow">›</span>
+      </a>
+
+      <a href="#" class="quick-link">
+        <div class="ql-icon">👨‍🏫</div>
+        <div class="ql-info">
+          <div class="ql-label">Faculty &amp; Staff Center <span class="new-badge">New</span></div>
+          <div class="ql-sub">Departmental presents and faculty links.</div>
+        </div>
+        <span class="ql-arrow">›</span>
+      </a>
+    </div>
+
+    <!-- Download Center -->
+    <div class="side-card">
+      <div class="side-card-header">
+        <span class="side-card-title">Download Center</span>
+        <a href="#" class="view-all-link">View All</a>
+      </div>
+
+      <div class="dl-item">
+        <div class="dl-icon">📄</div>
+        <div class="dl-info">
+          <div class="dl-name">Academic Calendar 2024-25</div>
+          <div class="dl-meta">PDF &nbsp;•&nbsp; 1.2 MB</div>
+        </div>
+        <button class="dl-btn" title="Download">⬇</button>
+      </div>
+
+      <div class="dl-item">
+        <div class="dl-icon blue">📄</div>
+        <div class="dl-info">
+          <div class="dl-name">Fee Structure 2024-25</div>
+          <div class="dl-meta">PDF &nbsp;•&nbsp; 850 KB</div>
+        </div>
+        <button class="dl-btn" title="Download">⬇</button>
+      </div>
+
+      <div class="dl-item">
+        <div class="dl-icon">📄</div>
+        <div class="dl-info">
+          <div class="dl-name">Examination Guidelines</div>
+          <div class="dl-meta">PDF &nbsp;•&nbsp; 620 KB</div>
+        </div>
+        <button class="dl-btn" title="Download">⬇</button>
+      </div>
+
+      <div class="dl-item">
+        <div class="dl-icon blue">📄</div>
+        <div class="dl-info">
+          <div class="dl-name">Hostel Rules &amp; Regulations</div>
+          <div class="dl-meta">PDF &nbsp;•&nbsp; 540 KB</div>
+        </div>
+        <button class="dl-btn" title="Download">⬇</button>
+      </div>
+
+      <div class="dl-item">
+        <div class="dl-icon">📄</div>
+        <div class="dl-info">
+          <div class="dl-name">Anti-Ragging Policy</div>
+          <div class="dl-meta">PDF &nbsp;•&nbsp; 410 KB</div>
+        </div>
+        <button class="dl-btn" title="Download">⬇</button>
+      </div>
+
+      <a href="#" class="view-all-btn" style="margin-top:12px;">View All Downloads →</a>
+    </div>
+
+  </div><!-- /sidebar -->
+</div><!-- /page-body -->
+
+<footer>© 2024 XYZ College. All rights reserved.</footer>
+
+</body>
+</html>
